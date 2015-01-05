@@ -80,8 +80,9 @@ class Cleaner
 		$dirs['composer.json'] = TRUE;
 
 		foreach (new FileSystemIterator($packageDir) as $path) {
-			if (!isset($dirs[$path->getFileName()])) {
-				echo "deleting {$path->getFileName()}\n";
+			$fileName = $path->getFileName();
+			if (!isset($dirs[$fileName])) {
+				echo "deleting $fileName\n";
 				$this->delete($path);
 			}
 		}
@@ -89,7 +90,7 @@ class Cleaner
 
 
 	/**
-	 * @return strings[]
+	 * @return string[]
 	 */
 	private function getSources(stdClass $data)
 	{
