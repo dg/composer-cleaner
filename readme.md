@@ -5,7 +5,7 @@ Victor The Cleaner for Composer
 
 This tool removes unnecessary files and directories from Composer vendor directory.
 
-Code Checker requires PHP 5.4.0 or newer. The best way how to install is to use Composer:
+Composer Cleaner requires PHP 5.4.0 or newer. The best way how to install it is to use Composer:
 
 ```
 composer create-project dg/composer-cleaner
