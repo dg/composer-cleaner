@@ -78,7 +78,7 @@ class Cleaner
 
 		foreach (new FileSystemIterator($packageDir) as $path) {
 			$fileName = $path->getFileName();
-			if (!isset($dirs[$fileName])) {
+			if (!isset($dirs[$fileName]) && strncasecmp($fileName, 'license', 7)) {
 				echo "deleting $fileName\n";
 				$this->delete($path);
 			}
