@@ -8,4 +8,4 @@ set_exception_handler(function($e) {
 });
 
 $cleaner = new Cleaner;
-$cleaner->clean(getcwd());
+$cleaner->clean(isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : getcwd());
