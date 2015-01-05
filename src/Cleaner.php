@@ -156,7 +156,7 @@ class Cleaner
 			throw new Exception("File $file not found.");
 		}
 		$data = json_decode(file_get_contents($file));
-		if (is_array($data)) {
+		if (!$data instanceof stdClass) {
 			throw new Exception("Invalid $file.");
 		}
 		return $data;
