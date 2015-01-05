@@ -127,8 +127,8 @@ class Cleaner
 	private function delete($path)
 	{
 		if (defined('PHP_WINDOWS_VERSION_BUILD')) {
-			exec('attrib -R ' . escapeshellarg($path) . ' /D');
-			exec('attrib -R ' . escapeshellarg("$path/*") . ' /D /S');
+			exec('attrib -R ' . escapeshellarg($path) . ' /D 2> nul');
+			exec('attrib -R ' . escapeshellarg("$path/*") . ' /D /S 2> nul');
 		}
 
 		if (is_dir($path)) {
