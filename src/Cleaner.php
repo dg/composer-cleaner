@@ -20,11 +20,8 @@ class Cleaner
 	{
 		$this->removedCount = 0;
 		$data = $this->loadComposerJson($projectDir);
-
-		$this->processVendorDir(isset($data->config->{'vendor-dir'})
-			? $data->config->{'vendor-dir'}
-			: 'vendor'
-		);
+		$vendorDir = isset($data->config->{'vendor-dir'}) ? $data->config->{'vendor-dir'} : 'vendor';
+		$this->processVendorDir("$projectDir/$vendorDir");
 
 		echo "Removed $this->removedCount files.\n";
 	}
