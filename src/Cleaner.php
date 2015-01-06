@@ -10,29 +10,28 @@
 class Cleaner
 {
 	/** @var int */
-	private $removed = 0;
+	private $removedCount = 0;
 
 
 	/**
 	 * @return void
 	 */
-	public function clean($path = '.')
+	public function clean($projectDir = '.')
 	{
-		$data = $this->loadComposerJson($path);
+		$data = $this->loadComposerJson($projectDir);
 
-		$this->scanVendorDir(isset($data->config->{'vendor-dir'})
+		$this->processVendorDir(isset($data->config->{'vendor-dir'})
 			? $data->config->{'vendor-dir'}
 			: 'vendor'
 		);
 
-		echo "Removed $this->removed files.\n";
+		echo "Removed $this->removedCount files.\n";
 	}
-
 
 	/**
 	 * @return void
 	 */
-	private function scanVendorDir($vendorDir)
+	private function processVendorDir($vendorDir)
 	{
 		if (!is_dir($vendorDir)) {
 			throw new Exception("Missing directory $vendorDir.");
@@ -136,14 +135,14 @@ class Cleaner
 				if ($item->isDir()) {
 					rmdir($item);
 				} else {
-					$this->removed++;
+					$this->removedCount++;
 					unlink($item);
 				}
 			}
 			rmdir($path);
 
 		} elseif (is_file($path)) {
-			$this->removed++;
+			$this->removedCount++;
 			unlink($path);
 		}
 	}
