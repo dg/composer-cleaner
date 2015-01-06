@@ -10,29 +10,26 @@
 class Cleaner
 {
 	/** @var int */
-	private $removed = 0;
+	private $removedCount;
 
 
 	/**
 	 * @return void
 	 */
-	public function clean($path = '.')
+	public function clean($projectDir)
 	{
-		$data = $this->loadComposerJson($path);
+		$this->removedCount = 0;
+		$data = $this->loadComposerJson($projectDir);
+		$vendorDir = isset($data->config->{'vendor-dir'}) ? $data->config->{'vendor-dir'} : 'vendor';
+		$this->processVendorDir("$projectDir/$vendorDir");
 
-		$this->scanVendorDir(isset($data->config->{'vendor-dir'})
-			? $data->config->{'vendor-dir'}
-			: 'vendor'
-		);
-
-		echo "Removed $this->removed files.\n";
+		echo "Removed $this->removedCount files.\n";
 	}
 
-
 	/**
 	 * @return void
 	 */
-	private function scanVendorDir($vendorDir)
+	private function processVendorDir($vendorDir)
 	{
 		if (!is_dir($vendorDir)) {
 			throw new Exception("Missing directory $vendorDir.");
@@ -46,6 +43,7 @@ class Cleaner
 				if (!$packageName->isDir()) {
 					continue;
 				}
+				echo "\nPACKAGE {$packageVendor->getFileName()}/{$packageName->getFileName()}\n";
 				$this->processPackage((string) $packageName);
 			}
 		}
@@ -57,7 +55,6 @@ class Cleaner
 	 */
 	private function processPackage($packageDir)
 	{
-		echo "\nPACKAGE $packageDir\n";
 		if (!is_file("$packageDir/composer.json")) {
 			echo "missing composer.json\n";
 			return;
@@ -80,8 +77,9 @@ class Cleaner
 		$dirs['composer.json'] = TRUE;
 
 		foreach (new FileSystemIterator($packageDir) as $path) {
-			if (!isset($dirs[$path->getFileName()])) {
-				echo "deleting {$path->getFileName()}\n";
+			$fileName = $path->getFileName();
+			if (!isset($dirs[$fileName]) && strncasecmp($fileName, 'license', 7)) {
+				echo "deleting $fileName\n";
 				$this->delete($path);
 			}
 		}
@@ -89,7 +87,7 @@ class Cleaner
 
 
 	/**
-	 * @return strings[]
+	 * @return string[]
 	 */
 	private function getSources(stdClass $data)
 	{
@@ -126,8 +124,8 @@ class Cleaner
 	private function delete($path)
 	{
 		if (defined('PHP_WINDOWS_VERSION_BUILD')) {
-			exec('attrib -R ' . escapeshellarg($path) . ' /D');
-			exec('attrib -R ' . escapeshellarg("$path/*") . ' /D /S');
+			exec('attrib -R ' . escapeshellarg($path) . ' /D 2> nul');
+			exec('attrib -R ' . escapeshellarg("$path/*") . ' /D /S 2> nul');
 		}
 
 		if (is_dir($path)) {
@@ -135,14 +133,14 @@ class Cleaner
 				if ($item->isDir()) {
 					rmdir($item);
 				} else {
-					$this->removed++;
+					$this->removedCount++;
 					unlink($item);
 				}
 			}
 			rmdir($path);
 
 		} elseif (is_file($path)) {
-			$this->removed++;
+			$this->removedCount++;
 			unlink($path);
 		}
 	}
@@ -158,7 +156,7 @@ class Cleaner
 			throw new Exception("File $file not found.");
 		}
 		$data = json_decode(file_get_contents($file));
-		if (is_array($data)) {
+		if (!$data instanceof stdClass) {
 			throw new Exception("Invalid $file.");
 		}
 		return $data;
