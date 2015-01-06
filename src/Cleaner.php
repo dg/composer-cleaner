@@ -10,7 +10,7 @@
 class Cleaner
 {
 	/** @var int */
-	private $removedCount = 0;
+	private $removedCount;
 
 
 	/**
@@ -18,6 +18,7 @@ class Cleaner
 	 */
 	public function clean($projectDir = '.')
 	{
+		$this->removedCount = 0;
 		$data = $this->loadComposerJson($projectDir);
 
 		$this->processVendorDir(isset($data->config->{'vendor-dir'})
