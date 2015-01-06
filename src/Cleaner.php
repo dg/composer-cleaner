@@ -43,6 +43,7 @@ class Cleaner
 				if (!$packageName->isDir()) {
 					continue;
 				}
+				echo "\nPACKAGE {$packageVendor->getFileName()}/{$packageName->getFileName()}\n";
 				$this->processPackage((string) $packageName);
 			}
 		}
@@ -54,7 +55,6 @@ class Cleaner
 	 */
 	private function processPackage($packageDir)
 	{
-		echo "\nPACKAGE $packageDir\n";
 		if (!is_file("$packageDir/composer.json")) {
 			echo "missing composer.json\n";
 			return;
