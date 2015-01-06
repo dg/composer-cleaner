@@ -8,4 +8,4 @@ set_exception_handler(function($e) {
 });
 
 $cleaner = new Cleaner;
-$cleaner->clean();
+$cleaner->clean(getcwd());

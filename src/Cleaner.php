@@ -16,7 +16,7 @@ class Cleaner
 	/**
 	 * @return void
 	 */
-	public function clean($projectDir = '.')
+	public function clean($projectDir)
 	{
 		$this->removedCount = 0;
 		$data = $this->loadComposerJson($projectDir);
