@@ -17,5 +17,5 @@
 	"autoload": {
 		"classmap": ["src/"]
 	},
-	"bin": ["bin/composer-cleaner"]
+	"bin": ["composer-cleaner"]
 }

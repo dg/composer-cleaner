@@ -14,7 +14,7 @@ composer create-project dg/composer-cleaner
 Usage:
 
 ```
-php bin/composer-cleaner.php
+php composer-cleaner
 ```
 
 WARNING: BACKUP ALL FILES BEFORE USE!

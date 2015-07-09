@@ -1,6 +1,8 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
+require is_file(__DIR__ . '/../vendor/autoload.php')
+	? __DIR__ . '/../vendor/autoload.php'
+	: __DIR__ . '/../../../autoload.php';
 
 
 set_exception_handler(function($e) {
@@ -15,6 +17,7 @@ Usage:
 
 Options:
 	-t | --test      Run in test-mode.
+
 
 XX
 , [
