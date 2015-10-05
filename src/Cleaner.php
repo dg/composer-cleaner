@@ -3,7 +3,7 @@
 /**
  * Victor The Cleaner for Composer.
  *
- * Copyright (c) 2015 David Grudl (http://davidgrudl.com)
+ * Copyright (c) 2015 David Grudl (https://davidgrudl.com)
  */
 
 
