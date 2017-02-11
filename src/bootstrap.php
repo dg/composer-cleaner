@@ -29,5 +29,5 @@ if ($cmd->isEmpty()) {
 	$cmd->help();
 }
 
-$cleaner = new Cleaner($options['--test']);
+$cleaner = new DG\Composer\Cleaner($options['--test']);
 $cleaner->clean($options['path']);

@@ -6,6 +6,14 @@
  * Copyright (c) 2015 David Grudl (https://davidgrudl.com)
  */
 
+namespace DG\Composer;
+
+use Exception;
+use FilesystemIterator;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use stdClass;
+
 
 class Cleaner
 {
