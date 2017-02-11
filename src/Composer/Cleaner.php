@@ -1,5 +1,13 @@
 <?php
 
+namespace DGComposer;
+
+use Exception;
+use FilesystemIterator;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use stdClass;
+
 /**
  * Victor The Cleaner for Composer.
  *
