@@ -20,27 +20,12 @@ class Cleaner
 	/** @var int */
 	private $removedCount;
 
-	/** @var bool */
-	private $testMode = FALSE;
-
-
-	/**
-	 * @param bool
-	 */
-	public function __construct($testMode = FALSE)
-	{
-		$this->testMode = $testMode;
-	}
 
 	/**
 	 * @return void
 	 */
 	public function clean($projectDir)
 	{
-		if ($this->testMode) {
-			echo "Running in test mode.\n";
-		}
-
 		$this->removedCount = 0;
 		$data = $this->loadComposerJson($projectDir);
 		$vendorDir = isset($data->config->{'vendor-dir'}) ? $data->config->{'vendor-dir'} : 'vendor';
@@ -103,9 +88,7 @@ class Cleaner
 			$fileName = $path->getFileName();
 			if (!isset($dirs[$fileName]) && strncasecmp($fileName, 'license', 7)) {
 				echo "deleting $fileName\n";
-				if (!$this->testMode) {
-					$this->delete($path);
-				}
+				$this->delete($path);
 			}
 		}
 	}
