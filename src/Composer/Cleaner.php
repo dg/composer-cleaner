@@ -8,7 +8,7 @@
 
 namespace DG\Composer;
 
-use Exception;
+use Composer\IO\IOInterface;
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -17,32 +17,24 @@ use stdClass;
 
 class Cleaner
 {
+	/** @var IOInterface */
+	private $io;
+
 	/** @var int */
-	private $removedCount;
+	private $removedCount = 0;
 
 
-	/**
-	 * @return void
-	 */
-	public function clean($projectDir)
+	public function __construct(IOInterface $io)
 	{
-		$this->removedCount = 0;
-		$data = $this->loadComposerJson($projectDir);
-		$vendorDir = isset($data->config->{'vendor-dir'}) ? $data->config->{'vendor-dir'} : 'vendor';
-		$this->processVendorDir("$projectDir/$vendorDir");
-
-		echo "Removed $this->removedCount files.\n";
+		$this->io = $io;
 	}
 
+
 	/**
 	 * @return void
 	 */
-	private function processVendorDir($vendorDir)
+	public function clean($vendorDir)
 	{
-		if (!is_dir($vendorDir)) {
-			throw new Exception("Missing directory $vendorDir.");
-		}
-
 		foreach (new FileSystemIterator($vendorDir) as $packageVendor) {
 			if (!$packageVendor->isDir()) {
 				continue;
@@ -51,10 +43,11 @@ class Cleaner
 				if (!$packageName->isDir()) {
 					continue;
 				}
-				echo "\nPACKAGE {$packageVendor->getFileName()}/{$packageName->getFileName()}\n";
+				$this->io->write("Package {$packageVendor->getFileName()}/{$packageName->getFileName()}", TRUE, $this->io::VERBOSE);
 				$this->processPackage((string) $packageName);
 			}
 		}
+		$this->io->write("Removed $this->removedCount files.");
 	}
 
 
@@ -63,12 +56,8 @@ class Cleaner
 	 */
 	private function processPackage($packageDir)
 	{
-		if (!is_file("$packageDir/composer.json")) {
-			echo "missing composer.json\n";
-			return;
-		}
 		$data = $this->loadComposerJson($packageDir);
-		if (isset($data->type) && $data->type !== 'library') {
+		if (!$data || (isset($data->type) && $data->type !== 'library')) {
 			return;
 		}
 
@@ -87,7 +76,7 @@ class Cleaner
 		foreach (new FileSystemIterator($packageDir) as $path) {
 			$fileName = $path->getFileName();
 			if (!isset($dirs[$fileName]) && strncasecmp($fileName, 'license', 7)) {
-				echo "deleting $fileName\n";
+				$this->io->write("Removing $path", TRUE, $this->io::VERBOSE);
 				$this->delete($path);
 			}
 		}
@@ -122,7 +111,7 @@ class Cleaner
 				$sources = array_merge($sources, (array) $items);
 
 			} else {
-				echo "unknown autoload type $type\n";
+				$this->io->writeError("unknown autoload type $type");
 				return [];
 			}
 		}
@@ -160,17 +149,19 @@ class Cleaner
 
 
 	/**
-	 * @return stdClass
+	 * @return stdClass|NULL
 	 */
 	private function loadComposerJson($dir)
 	{
 		$file = $dir . '/composer.json';
 		if (!is_file($file)) {
-			throw new Exception("File $file not found.");
+			$this->io->writeError("File $file not found.", TRUE, $this->io::VERBOSE);
+			return;
 		}
 		$data = json_decode(file_get_contents($file));
 		if (!$data instanceof stdClass) {
-			throw new Exception("Invalid $file.");
+			$this->io->writeError("Invalid $file.");
+			return;
 		}
 		return $data;
 	}

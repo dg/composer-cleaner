@@ -1,6 +1,6 @@
 {
 	"name": "dg/composer-cleaner",
-	"type": "project",
+	"type": "composer-plugin",
 	"description": "Victor The Cleaner: removes unnecessary files from vendor directory.",
 	"keywords": ["composer"],
 	"license": ["BSD-3-Clause"],
@@ -11,9 +11,13 @@
 		}
 	],
 	"require": {
-		"php": ">=5.4.0"
+		"php": ">=5.4.0",
+		"composer-plugin-api": "^1.0"
 	},
 	"autoload": {
 		"classmap": ["src/"]
+	},
+	"extra": {
+		"class": "DG\\Composer\\Plugin"
 	}
 }
