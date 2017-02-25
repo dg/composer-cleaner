@@ -126,7 +126,7 @@ class Cleaner
 			if ($type === 'psr-0') {
 				foreach ($items as $namespace => $paths) {
 					foreach ((array) $paths as $path) {
-						$sources[] = $path . strtr($namespace, '\\', '/');
+						$sources[] = $path . strtr($namespace, '\\_', '//');
 					}
 				}
 
