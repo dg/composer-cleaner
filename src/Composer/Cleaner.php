@@ -112,6 +112,9 @@ class Cleaner
 			} elseif ($type === 'classmap' || $type === 'files') {
 				$sources = array_merge($sources, (array) $items);
 
+			} elseif ($type === 'exclude-from-classmap') {
+				// ignore
+
 			} else {
 				$this->io->writeError("unknown autoload type $type");
 				return [];
