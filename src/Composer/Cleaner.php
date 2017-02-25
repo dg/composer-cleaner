@@ -9,9 +9,9 @@
 namespace DG\Composer;
 
 use Composer\IO\IOInterface;
+use Composer\Util\Filesystem;
+use Composer\Util\ProcessExecutor;
 use FilesystemIterator;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
 use stdClass;
 
 
@@ -47,7 +47,7 @@ class Cleaner
 				$this->processPackage((string) $packageName);
 			}
 		}
-		$this->io->write("Removed $this->removedCount files.");
+		$this->io->write("Removed $this->removedCount files or directories.");
 	}
 
 
@@ -72,12 +72,14 @@ class Cleaner
 		}
 
 		$dirs['composer.json'] = TRUE;
+		$fileSystem = new Filesystem(new ProcessExecutor($this->io));
 
 		foreach (new FileSystemIterator($packageDir) as $path) {
 			$fileName = $path->getFileName();
 			if (!isset($dirs[$fileName]) && strncasecmp($fileName, 'license', 7)) {
 				$this->io->write("Removing $path", TRUE, $this->io::VERBOSE);
-				$this->delete($path);
+				$fileSystem->remove($path);
+				$this->removedCount++;
 			}
 		}
 	}
@@ -117,34 +119,6 @@ class Cleaner
 		}
 
 		return $sources;
-	}
-
-
-	/**
-	 * @return void
-	 */
-	private function delete($path)
-	{
-		if (defined('PHP_WINDOWS_VERSION_BUILD')) {
-			exec('attrib -R ' . escapeshellarg($path) . ' /D 2> nul');
-			exec('attrib -R ' . escapeshellarg("$path/*") . ' /D /S 2> nul');
-		}
-
-		if (is_dir($path)) {
-			foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST) as $item) {
-				if ($item->isDir()) {
-					rmdir($item);
-				} else {
-					$this->removedCount++;
-					unlink($item);
-				}
-			}
-			rmdir($path);
-
-		} elseif (is_file($path)) {
-			$this->removedCount++;
-			unlink($path);
-		}
 	}
 
 
