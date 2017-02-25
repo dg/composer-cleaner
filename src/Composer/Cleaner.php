@@ -123,11 +123,16 @@ class Cleaner
 		$sources = isset($data->bin) ? (array) $data->bin : [];
 
 		foreach ($data->autoload as $type => $items) {
-			if ($type === 'psr-0' || $type === 'psr-4') {
+			if ($type === 'psr-0') {
 				foreach ($items as $namespace => $paths) {
 					foreach ((array) $paths as $path) {
 						$sources[] = $path . strtr($namespace, '\\', '/');
 					}
+				}
+
+			} elseif ($type === 'psr-4') {
+				foreach ($items as $namespace => $paths) {
+					$sources = array_merge($sources, (array) $paths);
 				}
 
 			} elseif ($type === 'classmap' || $type === 'files') {
