@@ -10,7 +10,6 @@ namespace DG\ComposerCleaner;
 
 use Composer\IO\IOInterface;
 use Composer\Util\Filesystem;
-use Composer\Util\ProcessExecutor;
 use FilesystemIterator;
 use stdClass;
 
@@ -20,6 +19,9 @@ class Cleaner
 	/** @var IOInterface */
 	private $io;
 
+	/** @var Filesystem */
+	private $fileSystem;
+
 	/** @var int */
 	private $removedCount = 0;
 
@@ -27,9 +29,10 @@ class Cleaner
 	private static $allowedComposerTypes = [NULL, 'library', 'composer-plugin'];
 
 
-	public function __construct(IOInterface $io)
+	public function __construct(IOInterface $io, Filesystem $fileSystem)
 	{
 		$this->io = $io;
+		$this->fileSystem = $fileSystem;
 	}
 
 
@@ -76,13 +79,12 @@ class Cleaner
 		}
 
 		$dirs['composer.json'] = TRUE;
-		$fileSystem = new Filesystem(new ProcessExecutor($this->io));
 
 		foreach (new FileSystemIterator($packageDir) as $path) {
 			$fileName = $path->getFileName();
 			if (!isset($dirs[$fileName]) && strncasecmp($fileName, 'license', 7)) {
 				$this->io->write("Removing $path", TRUE, IOInterface::VERBOSE);
-				$fileSystem->remove($path);
+				$this->fileSystem->remove($path);
 				$this->removedCount++;
 			}
 		}
