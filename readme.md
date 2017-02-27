@@ -6,10 +6,29 @@ Victor The Cleaner for Composer
 
 This tool removes unnecessary files and directories from Composer vendor directory.
 
-Installation:
+Installation
+------------
 
 ```
 composer require dg/composer-cleaner
 ```
 
 Then simply use `composer update`.
+
+
+Configuration
+-------------
+
+You can also specify paths to be ignored via `composer.json`:
+
+```json
+{
+	"config": {
+		"cleaner-ignore": {
+			"slevomat/eet-client": [  # name of package
+				"wsdl"                # one or more subdirectories
+			]
+		}
+	}
+}
+```

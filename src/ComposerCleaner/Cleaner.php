@@ -39,7 +39,7 @@ class Cleaner
 	/**
 	 * @return void
 	 */
-	public function clean($vendorDir)
+	public function clean($vendorDir, array $ignorePaths = [])
 	{
 		foreach (new FileSystemIterator($vendorDir) as $packageVendor) {
 			if (!$packageVendor->isDir()) {
@@ -49,8 +49,10 @@ class Cleaner
 				if (!$packageName->isDir()) {
 					continue;
 				}
-				$this->io->write("Package {$packageVendor->getFileName()}/{$packageName->getFileName()}", TRUE, IOInterface::VERBOSE);
-				$this->processPackage((string) $packageName);
+				$name = $packageVendor->getFileName() . '/' . $packageName->getFileName();
+				$ignore = isset($ignorePaths[$name]) ? (array) $ignorePaths[$name] : [];
+				$this->io->write("Package $name", TRUE, IOInterface::VERBOSE);
+				$this->processPackage((string) $packageName, $ignore);
 			}
 		}
 		$this->io->write("Removed $this->removedCount files or directories.");
@@ -60,7 +62,7 @@ class Cleaner
 	/**
 	 * @return void
 	 */
-	private function processPackage($packageDir)
+	private function processPackage($packageDir, array $ignorePaths)
 	{
 		$data = $this->loadComposerJson($packageDir);
 		$type = isset($data->type) ? $data->type : NULL;
@@ -68,21 +70,21 @@ class Cleaner
 			return;
 		}
 
-		$dirs = [];
+		$paths = array_fill_keys($ignorePaths, TRUE);
 		foreach ($this->getSources($data) as $source) {
 			$dir = strstr(ltrim(ltrim($source, '.'), '/') . '/', '/', TRUE);
-			$dirs[$dir] = TRUE;
+			$paths[$dir] = TRUE;
 		}
 
-		if (!$dirs || isset($dirs[''])) {
+		if (!$paths || isset($paths[''])) {
 			return;
 		}
 
-		$dirs['composer.json'] = TRUE;
+		$paths['composer.json'] = TRUE;
 
 		foreach (new FileSystemIterator($packageDir) as $path) {
 			$fileName = $path->getFileName();
-			if (!isset($dirs[$fileName]) && strncasecmp($fileName, 'license', 7)) {
+			if (!isset($paths[$fileName]) && strncasecmp($fileName, 'license', 7)) {
 				$this->io->write("Removing $path", TRUE, IOInterface::VERBOSE);
 				$this->fileSystem->remove($path);
 				$this->removedCount++;
