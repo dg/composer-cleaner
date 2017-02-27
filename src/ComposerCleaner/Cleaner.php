@@ -6,7 +6,7 @@
  * Copyright (c) 2015 David Grudl (https://davidgrudl.com)
  */
 
-namespace DG\Composer;
+namespace DG\ComposerCleaner;
 
 use Composer\IO\IOInterface;
 use Composer\Util\Filesystem;

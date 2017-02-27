@@ -1,6 +1,6 @@
 <?php
 
-namespace DG\Composer;
+namespace DG\ComposerCleaner;
 
 use Composer\Composer;
 use Composer\EventDispatcher\EventSubscriberInterface;
