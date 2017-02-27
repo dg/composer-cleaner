@@ -134,7 +134,7 @@ class Cleaner
 	/**
 	 * @return stdClass|NULL
 	 */
-	private function loadComposerJson($dir)
+	public function loadComposerJson($dir)
 	{
 		$file = $dir . '/composer.json';
 		if (!is_file($file)) {
