@@ -24,7 +24,7 @@ class Cleaner
 	private $removedCount = 0;
 
 	/** @var array */
-	private static $allowedComposerTypes = [NULL, 'library'];
+	private static $allowedComposerTypes = [NULL, 'library', 'composer-plugin'];
 
 
 	public function __construct(IOInterface $io)
