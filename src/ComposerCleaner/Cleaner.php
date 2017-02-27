@@ -23,6 +23,9 @@ class Cleaner
 	/** @var int */
 	private $removedCount = 0;
 
+	/** @var array */
+	private static $allowedComposerTypes = [NULL, 'library'];
+
 
 	public function __construct(IOInterface $io)
 	{
@@ -57,7 +60,8 @@ class Cleaner
 	private function processPackage($packageDir)
 	{
 		$data = $this->loadComposerJson($packageDir);
-		if (!$data || (isset($data->type) && $data->type !== 'library')) {
+		$type = isset($data->type) ? $data->type : NULL;
+		if (!$data || !in_array($type, self::$allowedComposerTypes, TRUE)) {
 			return;
 		}
 
