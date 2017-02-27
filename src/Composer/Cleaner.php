@@ -43,7 +43,7 @@ class Cleaner
 				if (!$packageName->isDir()) {
 					continue;
 				}
-				$this->io->write("Package {$packageVendor->getFileName()}/{$packageName->getFileName()}", TRUE, $this->io::VERBOSE);
+				$this->io->write("Package {$packageVendor->getFileName()}/{$packageName->getFileName()}", TRUE, IOInterface::VERBOSE);
 				$this->processPackage((string) $packageName);
 			}
 		}
@@ -77,7 +77,7 @@ class Cleaner
 		foreach (new FileSystemIterator($packageDir) as $path) {
 			$fileName = $path->getFileName();
 			if (!isset($dirs[$fileName]) && strncasecmp($fileName, 'license', 7)) {
-				$this->io->write("Removing $path", TRUE, $this->io::VERBOSE);
+				$this->io->write("Removing $path", TRUE, IOInterface::VERBOSE);
 				$fileSystem->remove($path);
 				$this->removedCount++;
 			}
@@ -132,7 +132,7 @@ class Cleaner
 	{
 		$file = $dir . '/composer.json';
 		if (!is_file($file)) {
-			$this->io->writeError("File $file not found.", TRUE, $this->io::VERBOSE);
+			$this->io->writeError("File $file not found.", TRUE, IOInterface::VERBOSE);
 			return;
 		}
 		$data = json_decode(file_get_contents($file));
