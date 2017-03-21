@@ -71,6 +71,17 @@ class Cleaner
 		}
 
 		$paths = array_fill_keys($ignorePaths, TRUE);
+
+		foreach ($this->getExcludes($data) as $exclude) {
+			$dir = trim(ltrim($exclude, '.'), '/');
+			if ($dir && strpos($dir, '..') === FALSE && !isset($paths[$dir])) {
+				$path = $packageDir . '/' . $dir;
+				$this->io->write("Removing $path", TRUE, IOInterface::VERBOSE);
+				$this->fileSystem->remove($path);
+				$this->removedCount++;
+			}
+		}
+
 		foreach ($this->getSources($data) as $source) {
 			$dir = strstr(ltrim(ltrim($source, '.'), '/') . '/', '/', TRUE);
 			$paths[$dir] = TRUE;
@@ -131,6 +142,17 @@ class Cleaner
 		}
 
 		return $sources;
+	}
+
+
+	/**
+	 * @return string[]
+	 */
+	private function getExcludes(stdClass $data)
+	{
+		return empty($data->autoload->{'exclude-from-classmap'})
+			? []
+			: (array) $data->autoload->{'exclude-from-classmap'};
 	}
 
 
