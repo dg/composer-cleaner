@@ -107,8 +107,9 @@ class Cleaner
 		foreach ($data->autoload as $type => $items) {
 			if ($type === 'psr-0') {
 				foreach ($items as $namespace => $paths) {
+					$namespace = strtr($namespace, '\\_', '//');
 					foreach ((array) $paths as $path) {
-						$sources[] = $path . strtr($namespace, '\\_', '//');
+						$sources[] = rtrim($path, '\\/') . '/' . $namespace;
 					}
 				}
 
