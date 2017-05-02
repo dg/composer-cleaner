@@ -23,7 +23,7 @@ You can also specify paths to be ignored via `composer.json`:
 
 ```js
 {
-	"config": {
+	"extra": {
 		"cleaner-ignore": {
 			"slevomat/eet-client": [  // name of package
 				"wsdl"                // one or more subdirectories
