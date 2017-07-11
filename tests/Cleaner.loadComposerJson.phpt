@@ -18,5 +18,4 @@ Assert::null($cleaner->loadComposerJson(__DIR__ . '/not-exists'));
 Assert::same([[
 	'writeError',
 	['File ' . __DIR__ . '/not-exists/composer.json not found.', TRUE, IOInterface::VERBOSE],
-]]
-, $io->getLog());
+]], $io->getLog());

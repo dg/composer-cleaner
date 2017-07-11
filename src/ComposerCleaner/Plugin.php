@@ -14,7 +14,6 @@ use Composer\Util\ProcessExecutor;
 
 class Plugin implements PluginInterface, EventSubscriberInterface
 {
-
 	public function activate(Composer $composer, IOInterface $io)
 	{
 	}
@@ -38,5 +37,4 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 		$cleaner = new Cleaner($event->getIO(), $fileSystem);
 		$cleaner->clean($vendorDir, $ignorePaths);
 	}
-
 }

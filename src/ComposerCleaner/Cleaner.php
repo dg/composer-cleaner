@@ -173,5 +173,4 @@ class Cleaner
 		}
 		return $data;
 	}
-
 }
