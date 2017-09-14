@@ -32,3 +32,17 @@ You can also specify paths to be ignored via `composer.json`:
 	}
 }
 ```
+
+or you can ignore the whole package:
+
+```js
+{
+	"extra": {
+		"cleaner-ignore": {
+			"slevomat/eet-client": [  // name of package
+				"*"                // ignore all
+			]
+		}
+	}
+}
+```

@@ -72,6 +72,11 @@ class Cleaner
 
 		$paths = array_fill_keys($ignorePaths, true);
 
+		if (isset($paths['*'])) {
+			$this->io->write("Composer cleaner: Ignoring whole package $packageDir", true, IOInterface::VERBOSE);
+			return;
+		}
+
 		foreach ($this->getExcludes($data) as $exclude) {
 			$dir = trim(ltrim($exclude, '.'), '/');
 			if ($dir && strpos($dir, '..') === false && !isset($paths[$dir])) {
