@@ -54,11 +54,11 @@ class Cleaner
 				}
 				$name = $packageVendor->getFileName() . '/' . $packageName->getFileName();
 				$ignore = isset($ignorePaths[$name]) ? (array) $ignorePaths[$name] : [];
-				$this->io->write("Package $name", true, IOInterface::VERBOSE);
+				$this->io->write("Composer cleaner: Package $name", true, IOInterface::VERBOSE);
 				$this->processPackage((string) $packageName, $ignore);
 			}
 		}
-		$this->io->write("Removed $this->removedCount files or directories.");
+		$this->io->write("Composer cleaner: Removed $this->removedCount files or directories.");
 	}
 
 
@@ -77,7 +77,7 @@ class Cleaner
 			$dir = trim(ltrim($exclude, '.'), '/');
 			if ($dir && strpos($dir, '..') === false && !self::matchMask($dir, $ignoreFiles)) {
 				$path = $packageDir . '/' . $dir;
-				$this->io->write("Removing $path", true, IOInterface::VERBOSE);
+				$this->io->write("Composer cleaner: Removing $path", true, IOInterface::VERBOSE);
 				$this->fileSystem->remove($path);
 				$this->removedCount++;
 			}
@@ -97,7 +97,7 @@ class Cleaner
 		foreach (new FileSystemIterator($packageDir) as $path) {
 			$fileName = $path->getFileName();
 			if (!self::matchMask($fileName, $ignoreFiles)) {
-				$this->io->write("Removing $path", true, IOInterface::VERBOSE);
+				$this->io->write("Composer cleaner: Removing $path", true, IOInterface::VERBOSE);
 				$this->fileSystem->remove($path);
 				$this->removedCount++;
 			}
@@ -180,12 +180,12 @@ class Cleaner
 	{
 		$file = $dir . '/composer.json';
 		if (!is_file($file)) {
-			$this->io->writeError("File $file not found.", true, IOInterface::VERBOSE);
+			$this->io->writeError("Composer cleaner: File $file not found.", true, IOInterface::VERBOSE);
 			return;
 		}
 		$data = json_decode(file_get_contents($file));
 		if (!$data instanceof stdClass) {
-			$this->io->writeError("Invalid $file.");
+			$this->io->writeError("Composer cleaner: Invalid $file.");
 			return;
 		}
 		return $data;
