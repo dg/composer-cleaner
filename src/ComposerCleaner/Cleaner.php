@@ -53,9 +53,13 @@ class Cleaner
 					continue;
 				}
 				$name = $packageVendor->getFileName() . '/' . $packageName->getFileName();
-				$ignore = isset($ignorePaths[$name]) ? (array) $ignorePaths[$name] : [];
-				$this->io->write("Composer cleaner: Package $name", true, IOInterface::VERBOSE);
-				$this->processPackage((string) $packageName, $ignore);
+				$ignore = isset($ignorePaths[$name]) ? $ignorePaths[$name] : null;
+				if ($ignore === true) {
+					$this->io->write("Composer cleaner: Skipped package $name", true, IOInterface::VERBOSE);
+				} else {
+					$this->io->write("Composer cleaner: Package $name", true, IOInterface::VERBOSE);
+					$this->processPackage((string) $packageName, (array) $ignore);
+				}
 			}
 		}
 		$this->io->write("Composer cleaner: Removed $this->removedCount files or directories.");

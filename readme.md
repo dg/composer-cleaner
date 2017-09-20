@@ -27,7 +27,9 @@ You can also specify paths to be ignored (ie they will not be deleted) via `comp
 		"cleaner-ignore": {
 			"slevomat/eet-client": [  // name of package
 				"wsdl*"               // files or subdirectories, you can use wildcards `*` and `?`
-			]
+			],
+
+			"mpdf/mpdf": true         // ignores whole package
 		}
 	}
 }
