@@ -62,7 +62,7 @@ class Cleaner
 	/**
 	 * @return void
 	 */
-	private function processPackage($packageDir, array $ignorePaths)
+	private function processPackage($packageDir, array $ignoreFiles)
 	{
 		$data = $this->loadComposerJson($packageDir);
 		$type = isset($data->type) ? $data->type : null;
@@ -70,11 +70,9 @@ class Cleaner
 			return;
 		}
 
-		$paths = array_fill_keys($ignorePaths, true);
-
 		foreach ($this->getExcludes($data) as $exclude) {
 			$dir = trim(ltrim($exclude, '.'), '/');
-			if ($dir && strpos($dir, '..') === false && !isset($paths[$dir])) {
+			if ($dir && strpos($dir, '..') === false && !self::matchMask($dir, $ignoreFiles)) {
 				$path = $packageDir . '/' . $dir;
 				$this->io->write("Removing $path", true, IOInterface::VERBOSE);
 				$this->fileSystem->remove($path);
@@ -84,23 +82,34 @@ class Cleaner
 
 		foreach ($this->getSources($data) as $source) {
 			$dir = strstr(ltrim(ltrim($source, '.'), '/') . '/', '/', true);
-			$paths[$dir] = true;
+			$ignoreFiles[] = $dir;
 		}
 
-		if (!$paths || isset($paths[''])) {
+		if (!$ignoreFiles || self::matchMask('', $ignoreFiles)) {
 			return;
 		}
 
-		$paths['composer.json'] = true;
+		$ignoreFiles[] = 'composer.json';
 
 		foreach (new FileSystemIterator($packageDir) as $path) {
 			$fileName = $path->getFileName();
-			if (!isset($paths[$fileName]) && strncasecmp($fileName, 'license', 7)) {
+			if (!self::matchMask($fileName, $ignoreFiles) && strncasecmp($fileName, 'license', 7)) {
 				$this->io->write("Removing $path", true, IOInterface::VERBOSE);
 				$this->fileSystem->remove($path);
 				$this->removedCount++;
 			}
 		}
+	}
+
+
+	/**
+	 * @param  string
+	 * @param  string[]
+	 * @return bool
+	 */
+	public static function matchMask($fileName, array $patterns)
+	{
+		return in_array($fileName, $patterns, true);
 	}
 
 
