@@ -19,14 +19,14 @@ Then simply use `composer update`.
 Configuration
 -------------
 
-You can also specify paths to be ignored via `composer.json`:
+You can also specify paths to be ignored (ie they will not be deleted) via `composer.json`:
 
 ```js
 {
 	"extra": {
 		"cleaner-ignore": {
 			"slevomat/eet-client": [  // name of package
-				"wsdl"                // one or more subdirectories
+				"wsdl*"               // files or subdirectories, you can use wildcards `*` and `?`
 			]
 		}
 	}

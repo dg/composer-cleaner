@@ -109,7 +109,12 @@ class Cleaner
 	 */
 	public static function matchMask($fileName, array $patterns)
 	{
-		return in_array($fileName, $patterns, true);
+		foreach ($patterns as $pattern) {
+			if (fnmatch($pattern, $fileName)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 
