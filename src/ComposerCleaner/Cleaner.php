@@ -28,6 +28,9 @@ class Cleaner
 	/** @var array */
 	private static $allowedComposerTypes = [null, 'library', 'composer-plugin'];
 
+	/** @var string[] */
+	private static $alwaysIgnore = ['composer.json', 'license*', 'LICENSE*'];
+
 
 	public function __construct(IOInterface $io, Filesystem $fileSystem)
 	{
@@ -89,11 +92,11 @@ class Cleaner
 			return;
 		}
 
-		$ignoreFiles[] = 'composer.json';
+		$ignoreFiles = array_merge($ignoreFiles, self::$alwaysIgnore);
 
 		foreach (new FileSystemIterator($packageDir) as $path) {
 			$fileName = $path->getFileName();
-			if (!self::matchMask($fileName, $ignoreFiles) && strncasecmp($fileName, 'license', 7)) {
+			if (!self::matchMask($fileName, $ignoreFiles)) {
 				$this->io->write("Removing $path", true, IOInterface::VERBOSE);
 				$this->fileSystem->remove($path);
 				$this->removedCount++;
