@@ -21,10 +21,12 @@ namespace {
 	{
 		private $log = [];
 
+
 		public function __call($name, $args)
 		{
 			$this->log[] = [$name, $args];
 		}
+
 
 		public function getLog()
 		{

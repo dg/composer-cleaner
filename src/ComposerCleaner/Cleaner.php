@@ -44,11 +44,11 @@ class Cleaner
 	 */
 	public function clean($vendorDir, array $ignorePaths = [])
 	{
-		foreach (new FileSystemIterator($vendorDir) as $packageVendor) {
+		foreach (new FilesystemIterator($vendorDir) as $packageVendor) {
 			if (!$packageVendor->isDir()) {
 				continue;
 			}
-			foreach (new FileSystemIterator($packageVendor) as $packageName) {
+			foreach (new FilesystemIterator($packageVendor) as $packageName) {
 				if (!$packageName->isDir()) {
 					continue;
 				}
@@ -98,7 +98,7 @@ class Cleaner
 
 		$ignoreFiles = array_merge($ignoreFiles, self::$alwaysIgnore);
 
-		foreach (new FileSystemIterator($packageDir) as $path) {
+		foreach (new FilesystemIterator($packageDir) as $path) {
 			$fileName = $path->getFileName();
 			if (!self::matchMask($fileName, $ignoreFiles)) {
 				$this->io->write("Composer cleaner: Removing $path", true, IOInterface::VERBOSE);
