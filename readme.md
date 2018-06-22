@@ -34,3 +34,5 @@ You can also specify paths to be ignored (ie they will not be deleted) via `comp
 	}
 }
 ```
+
+If you like it, **[please make a donation now](https://nette.org/make-donation?to=composer-cleaner)**. Thank you!
