@@ -29,7 +29,7 @@ class Cleaner
 	private static $allowedComposerTypes = [null, 'library', 'composer-plugin'];
 
 	/** @var string[] */
-	private static $alwaysIgnore = ['composer.json', 'license*', 'LICENSE*'];
+	private static $alwaysIgnore = ['composer.json', 'license*', 'LICENSE*', '.phpstorm.meta.php'];
 
 
 	public function __construct(IOInterface $io, Filesystem $fileSystem)
