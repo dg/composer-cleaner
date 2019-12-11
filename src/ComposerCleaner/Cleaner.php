@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /**
  * Victor The Cleaner for Composer.
@@ -53,7 +54,7 @@ class Cleaner
 					continue;
 				}
 				$name = $packageVendor->getFileName() . '/' . $packageName->getFileName();
-				$ignore = isset($ignorePaths[$name]) ? $ignorePaths[$name] : null;
+				$ignore = $ignorePaths[$name] ?? null;
 				if ($ignore === true) {
 					$this->io->write("Composer cleaner: Skipped package $name", true, IOInterface::VERBOSE);
 				} else {

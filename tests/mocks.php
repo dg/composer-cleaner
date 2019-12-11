@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace Composer\IO {
 
 	interface IOInterface
 	{
-		const VERBOSE = 'VERBOSE';
+		public const VERBOSE = 'VERBOSE';
 	}
 }
 

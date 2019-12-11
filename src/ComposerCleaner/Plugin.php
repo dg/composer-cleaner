@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace DG\ComposerCleaner;
 
@@ -32,7 +33,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 	{
 		$vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
 		$extra = $event->getComposer()->getPackage()->getExtra();
-		$ignorePaths = isset($extra['cleaner-ignore']) ? $extra['cleaner-ignore'] : (array) $event->getComposer()->getConfig()->get('cleaner-ignore');
+		$ignorePaths = $extra['cleaner-ignore'] ?? (array) $event->getComposer()->getConfig()->get('cleaner-ignore');
 		$fileSystem = new Filesystem(new ProcessExecutor($event->getIO()));
 		$cleaner = new Cleaner($event->getIO(), $fileSystem);
 		$cleaner->clean($vendorDir, $ignorePaths);
