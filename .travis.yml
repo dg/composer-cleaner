@@ -1,11 +1,9 @@
 language: php
 php:
-    - 5.4
-    - 5.5
-    - 5.6
-    - 7.0
     - 7.1
     - 7.2
+    - 7.3
+    - 7.4
 
 before_install:
     # turn off XDebug
@@ -24,7 +22,6 @@ after_failure:
 jobs:
     include:
         -   name: Nette Code Checker
-            php: 7.1
             install:
                 - travis_retry composer create-project nette/code-checker temp/code-checker ^3 --no-progress
             script:
@@ -32,7 +29,6 @@ jobs:
 
 
         -   name: Nette Coding Standard
-            php: 7.1
             install:
                 - travis_retry composer create-project nette/coding-standard temp/coding-standard ^2 --no-progress
             script:
@@ -40,7 +36,6 @@ jobs:
 
 
         -   stage: Static Analysis (informative)
-            php: 7.1
             install:
                 # Install PHPStan
                 - travis_retry composer create-project phpstan/phpstan-shim temp/phpstan --no-progress
