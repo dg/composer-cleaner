@@ -15,7 +15,8 @@
 		"composer-plugin-api": "^1.0"
 	},
 	"require-dev": {
-		"nette/tester": "^2.2"
+		"nette/tester": "^2.2",
+		"phpstan/phpstan": "^0.12"
 	},
 	"autoload": {
 		"classmap": ["src/"]
