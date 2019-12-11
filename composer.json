@@ -15,10 +15,15 @@
 		"composer-plugin-api": "^1.0"
 	},
 	"require-dev": {
-		"nette/tester": "^2.2"
+		"nette/tester": "^2.2",
+		"phpstan/phpstan": "^0.12"
 	},
 	"autoload": {
 		"classmap": ["src/"]
+	},
+	"scripts": {
+		"phpstan": "phpstan analyse --level 5 src",
+		"tester": "tester tests -s"
 	},
 	"extra": {
 		"class": "DG\\ComposerCleaner\\Plugin"
