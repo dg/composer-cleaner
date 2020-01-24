@@ -37,7 +37,9 @@ Simply add a `extra > cleaner-ignore` section to `composer.json` file:
 				"wsdl*"               // list of files or subdirectories, you can use wildcards `*` and `?`
 			],
 
-			"mpdf/mpdf": true         // ignores whole package
+			"mpdf/mpdf": [
+				""      	   // ignores whole package
+			]
 		}
 	}
 }
