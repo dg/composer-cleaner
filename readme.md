@@ -43,4 +43,9 @@ Simply add a `extra > cleaner-ignore` section to `composer.json` file:
 }
 ```
 
-If you like it, **[please make a donation now](https://nette.org/make-donation?to=composer-cleaner)**. Thank you!
+Support Project
+---------------
+
+Do you like Victor The Cleaner? Are you looking forward to the new features?
+
+[![Donate](https://files.nette.org/icons/donation-1.svg?)](https://nette.org/make-donation?to=composer-cleaner)
