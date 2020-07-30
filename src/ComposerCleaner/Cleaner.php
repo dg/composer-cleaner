@@ -88,25 +88,75 @@ class Cleaner
 			}
 		}
 
+		$toIgnore = [];
+
 		foreach ($this->getSources($data) as $source) {
-			$dir = strstr(ltrim(ltrim($source, '.'), '/') . '/', '/', true);
-			$ignoreFiles[] = $dir;
+			$dir = '/' . strstr(ltrim(ltrim($source, '.'), '/') . '/', '/', true);
+
+			if (is_dir($packageDir . $dir)) {
+				$dir .= '/*';
+			}
+
+			$toIgnore[] = $dir;
 		}
 
-		if (!$ignoreFiles || self::matchMask('', $ignoreFiles)) {
+		$toIgnore = array_merge($toIgnore, $ignoreFiles);
+
+		if (!$toIgnore || self::matchMask('', $toIgnore)) {
 			return;
 		}
 
-		$ignoreFiles = array_merge($ignoreFiles, self::$alwaysIgnore);
+		$toIgnore = array_merge($toIgnore, array_map(function ($v) {
+			return '/' . ltrim($v, '/');
+		}, self::$alwaysIgnore));
 
-		foreach (new FilesystemIterator($packageDir) as $path) {
-			$fileName = $path->getFileName();
-			if (!self::matchMask($fileName, $ignoreFiles)) {
-				$this->io->write("Composer cleaner: Removing $path", true, IOInterface::VERBOSE);
-				$this->fileSystem->remove($path);
-				$this->removedCount++;
+		foreach ($this->collectPaths($packageDir, $toIgnore) as $path) {
+			$this->io->write("Composer cleaner: Removing $path", true, IOInterface::VERBOSE);
+			$this->fileSystem->remove($path);
+			$this->removedCount++;
+		}
+	}
+
+
+	/**
+	 * @param  string
+	 * @param  string[]
+	 * @param  string
+	 * @return string[]|bool
+	 */
+	private function collectPaths($directory, $ignorePaths, $subdir = '')
+	{
+		$list = [];
+		$iterator = dir($directory . $subdir);
+		$removeAll = true;
+		while (($entry = $iterator->read()) !== false) {
+			$path = "$directory$subdir/$entry";
+			$short = "$subdir/$entry";
+
+			if ($entry == '.' || $entry == '..') {
+				continue;
+
+			} elseif (self::matchMask($short, $ignorePaths, is_dir($path))) {
+				$removeAll = false;
+				continue;
+
+			} elseif (is_dir($path)) {
+				$removeChildren = $this->collectPaths($directory, $ignorePaths, $short);
+
+				if ($removeChildren === true) {
+					$list[$short . '/'] = $path;
+
+				} else {
+					$list += $removeChildren;
+					$removeAll = false;
+				}
+
+			} elseif (is_file($path)) {
+				$list[$short] = $path;
 			}
 		}
+		$iterator->close();
+		return ($subdir !== '' && $removeAll) ? true : $list;
 	}
 
 
@@ -115,14 +165,40 @@ class Cleaner
 	 * @param  string[]
 	 * @return bool
 	 */
-	public static function matchMask($fileName, array $patterns)
+	public static function matchMask($fileName, array $patterns, $isDir = false)
 	{
+		$res = false;
+		$path = explode('/', ltrim($fileName, '/'));
 		foreach ($patterns as $pattern) {
-			if (fnmatch($pattern, $fileName)) {
-				return true;
+			$pattern = strtr($pattern, '\\', '/');
+			if ($neg = substr($pattern, 0, 1) === '!') {
+				$pattern = substr($pattern, 1);
+			}
+
+			if (strpos($pattern, '/') === false) { // no slash means base name
+				if (fnmatch($pattern, end($path), FNM_CASEFOLD)) {
+					$res = !$neg;
+				}
+				continue;
+
+			} elseif (substr($pattern, -1) === '/') { // trailing slash means directory
+				$pattern = trim($pattern, '/');
+				if (!$isDir && count($path) <= count(explode('/', $pattern))) {
+					continue;
+				}
+			}
+
+			$parts = explode('/', ltrim($pattern, '/'));
+
+			if (fnmatch(
+				implode('/', $neg && $isDir ? array_slice($parts, 0, count($path)) : $parts),
+				implode('/', array_slice($path, 0, count($parts))),
+				FNM_CASEFOLD | FNM_PATHNAME
+			)) {
+				$res = !$neg;
 			}
 		}
-		return false;
+		return $res;
 	}
 
 

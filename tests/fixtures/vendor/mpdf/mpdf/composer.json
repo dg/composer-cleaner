@@ -1,0 +1,9 @@
+{
+	"name": "mpdf/mpdf",
+	"type": "library",
+	"autoload": {
+		"psr-4": {
+			"Mpdf\\": "src/"
+		}
+	}
+}
