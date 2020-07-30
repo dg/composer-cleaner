@@ -12,7 +12,8 @@
 	],
 	"require": {
 		"php": ">=7.1",
-		"composer-plugin-api": "^1.0"
+		"composer-plugin-api": "^1.0",
+		"composer/composer": "^1.10"
 	},
 	"require-dev": {
 		"nette/tester": "^2.2",
