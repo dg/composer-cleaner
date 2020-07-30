@@ -40,10 +40,7 @@ class Cleaner
 	}
 
 
-	/**
-	 * @return void
-	 */
-	public function clean($vendorDir, array $ignorePaths = [])
+	public function clean($vendorDir, array $ignorePaths = []): void
 	{
 		foreach (new FilesystemIterator($vendorDir) as $packageVendor) {
 			if (!$packageVendor->isDir()) {
@@ -67,10 +64,7 @@ class Cleaner
 	}
 
 
-	/**
-	 * @return void
-	 */
-	private function processPackage($packageDir, array $ignoreFiles)
+	private function processPackage(string $packageDir, array $ignoreFiles): void
 	{
 		$data = $this->loadComposerJson($packageDir);
 		$type = isset($data->type) ? $data->type : null;
@@ -111,11 +105,9 @@ class Cleaner
 
 
 	/**
-	 * @param  string
-	 * @param  string[]
-	 * @return bool
+	 * @param  string[]  $patterns
 	 */
-	public static function matchMask($fileName, array $patterns)
+	public static function matchMask(string $fileName, array $patterns): bool
 	{
 		foreach ($patterns as $pattern) {
 			if (fnmatch($pattern, $fileName)) {
@@ -129,7 +121,7 @@ class Cleaner
 	/**
 	 * @return string[]
 	 */
-	private function getSources(stdClass $data)
+	private function getSources(stdClass $data): array
 	{
 		if (empty($data->autoload)) {
 			return [];
@@ -178,20 +170,17 @@ class Cleaner
 	}
 
 
-	/**
-	 * @return stdClass|null
-	 */
-	public function loadComposerJson($dir)
+	public function loadComposerJson(string $dir): ?stdClass
 	{
 		$file = $dir . '/composer.json';
 		if (!is_file($file)) {
 			$this->io->writeError("Composer cleaner: File $file not found.", true, IOInterface::VERBOSE);
-			return;
+			return null;
 		}
 		$data = json_decode(file_get_contents($file));
 		if (!$data instanceof stdClass) {
 			$this->io->writeError("Composer cleaner: Invalid $file.");
-			return;
+			return null;
 		}
 		return $data;
 	}
