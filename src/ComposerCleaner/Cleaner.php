@@ -58,7 +58,7 @@ class Cleaner
 					$this->io->write("Composer cleaner: Skipped package $name", true, IOInterface::VERBOSE);
 				} else {
 					$this->io->write("Composer cleaner: Package $name", true, IOInterface::VERBOSE);
-					$this->processPackage((string) $packageName, (array) $ignore);
+					$this->processPackage((string) $packageName, $ignore !== null ? ((array) $ignore) : null);
 				}
 			}
 		}
@@ -69,12 +69,16 @@ class Cleaner
 	/**
 	 * @return void
 	 */
-	private function processPackage($packageDir, array $ignoreFiles)
+	private function processPackage($packageDir, array $ignoreFiles = null)
 	{
 		$data = $this->loadComposerJson($packageDir);
 		$type = isset($data->type) ? $data->type : null;
 		if (!$data || !in_array($type, self::$allowedComposerTypes, true)) {
 			return;
+		}
+
+		if ($ignoreFiles === null) {
+			$ignoreFiles = isset($data->extra->{'cleaner-ignore'}) ? ((array) $data->extra->{'cleaner-ignore'}) : [];
 		}
 
 		foreach ($this->getExcludes($data) as $exclude) {
