@@ -38,7 +38,7 @@ jobs:
 
         -   stage: Static Analysis (informative)
             script:
-                - vendor/bin/phpstan analyse --level 5 src
+                - composer run-script phpstan
 
 
     allow_failures:
