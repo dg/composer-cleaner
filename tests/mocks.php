@@ -41,7 +41,7 @@ namespace {
 	{
 	}
 
-	class Filesystem extends Mock  implements Composer\Util\Filesystem
+	class Filesystem extends Mock implements Composer\Util\Filesystem
 	{
 	}
 }
