@@ -67,7 +67,7 @@ class Cleaner
 	private function processPackage(string $packageDir, array $ignoreFiles): void
 	{
 		$data = $this->loadComposerJson($packageDir);
-		$type = isset($data->type) ? $data->type : null;
+		$type = $data->type ?? null;
 		if (!$data || !in_array($type, self::$allowedComposerTypes, true)) {
 			return;
 		}
