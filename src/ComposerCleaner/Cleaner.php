@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -60,6 +61,7 @@ class Cleaner
 				}
 			}
 		}
+
 		$this->io->write("Composer cleaner: Removed $this->removedCount files or directories.");
 	}
 
@@ -114,6 +116,7 @@ class Cleaner
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -137,12 +140,10 @@ class Cleaner
 						$sources[] = rtrim($path, '\\/') . '/' . $namespace;
 					}
 				}
-
 			} elseif ($type === 'psr-4') {
 				foreach ($items as $namespace => $paths) {
 					$sources = array_merge($sources, (array) $paths);
 				}
-
 			} elseif ($type === 'classmap' || $type === 'files') {
 				$sources = array_merge($sources, (array) $items);
 
