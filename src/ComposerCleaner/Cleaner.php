@@ -97,7 +97,7 @@ class Cleaner
 			$fileName = $path->getFileName();
 			if (!self::matchMask($fileName, $ignoreFiles)) {
 				$this->io->write("Composer cleaner: Removing $path", true, IOInterface::VERBOSE);
-				$this->fileSystem->remove($path);
+				$this->fileSystem->remove((string) $path);
 				$this->removedCount++;
 			}
 		}
