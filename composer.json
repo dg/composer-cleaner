@@ -12,10 +12,10 @@
 	],
 	"require": {
 		"php": ">=8.2",
-		"composer-plugin-api": "^1.0 || ^2.0"
+		"composer-plugin-api": "^2.6"
 	},
 	"require-dev": {
-		"composer/composer": "^1.10 || ^2.0",
+		"composer/composer": "^2.7",
 		"nette/tester": "^2.6",
 		"phpstan/phpstan": "^0.12"
 	},
