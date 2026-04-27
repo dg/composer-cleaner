@@ -49,7 +49,7 @@ class Cleaner
 				if (!$packageName->isDir()) {
 					continue;
 				}
-				$name = $packageVendor->getFileName() . '/' . $packageName->getFileName();
+				$name = $packageVendor->getFilename() . '/' . $packageName->getFilename();
 				$ignore = $ignorePaths[$name] ?? null;
 				if ($ignore === true) {
 					$this->io->write("Composer cleaner: Skipped package $name", true, IOInterface::VERBOSE);
@@ -94,7 +94,7 @@ class Cleaner
 		$ignoreFiles = array_merge($ignoreFiles, self::$alwaysIgnore);
 
 		foreach (new FilesystemIterator($packageDir) as $path) {
-			$fileName = $path->getFileName();
+			$fileName = $path->getFilename();
 			if (!self::matchMask($fileName, $ignoreFiles)) {
 				$this->io->write("Composer cleaner: Removing $path", true, IOInterface::VERBOSE);
 				$this->fileSystem->remove((string) $path);
@@ -133,13 +133,13 @@ class Cleaner
 		foreach ($data->autoload as $type => $items) {
 			if ($type === 'psr-0') {
 				foreach ($items as $namespace => $paths) {
-					$namespace = strtr($namespace, '\\_', '//');
+					$namespace = strtr($namespace, '\_', '//');
 					foreach ((array) $paths as $path) {
-						$sources[] = rtrim($path, '\\/') . '/' . $namespace;
+						$sources[] = rtrim($path, '\/') . '/' . $namespace;
 					}
 				}
 			} elseif ($type === 'psr-4') {
-				foreach ($items as $namespace => $paths) {
+				foreach ($items as $paths) {
 					$sources = array_merge($sources, (array) $paths);
 				}
 			} elseif ($type === 'classmap' || $type === 'files') {
