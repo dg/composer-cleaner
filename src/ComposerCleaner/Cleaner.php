@@ -18,10 +18,10 @@ class Cleaner
 {
 	private int $removedCount = 0;
 
-	/** @var array */
+	/** @var list<string|null> */
 	private static array $allowedComposerTypes = [null, 'library', 'composer-plugin'];
 
-	/** @var string[] */
+	/** @var list<string> */
 	private static array $alwaysIgnore = ['composer.json', 'license*', 'LICENSE*', '.phpstorm.meta.php'];
 
 
@@ -32,13 +32,18 @@ class Cleaner
 	}
 
 
+	/**
+	 * @param  array<string, true|list<string>>  $ignorePaths
+	 */
 	public function clean(string $vendorDir, array $ignorePaths = []): void
 	{
 		foreach (new FilesystemIterator($vendorDir) as $packageVendor) {
+			assert($packageVendor instanceof \SplFileInfo);
 			if (!$packageVendor->isDir()) {
 				continue;
 			}
 			foreach (new FilesystemIterator((string) $packageVendor) as $packageName) {
+				assert($packageName instanceof \SplFileInfo);
 				if (!$packageName->isDir()) {
 					continue;
 				}
@@ -62,6 +67,9 @@ class Cleaner
 	}
 
 
+	/**
+	 * @param  list<string>  $ignoreFiles
+	 */
 	private function processPackage(string $packageDir, array $ignoreFiles): void
 	{
 		$data = $this->loadComposerJson($packageDir);
@@ -81,7 +89,7 @@ class Cleaner
 		}
 
 		foreach ($this->getSources($data) as $source) {
-			$dir = strstr(ltrim(ltrim($source, '.'), '/') . '/', '/', true);
+			$dir = explode('/', ltrim(ltrim($source, '.'), '/'), 2)[0];
 			$ignoreFiles[] = $dir;
 		}
 
@@ -92,6 +100,7 @@ class Cleaner
 		$ignoreFiles = array_merge($ignoreFiles, self::$alwaysIgnore);
 
 		foreach (new FilesystemIterator($packageDir) as $path) {
+			assert($path instanceof \SplFileInfo);
 			$fileName = $path->getFilename();
 			if (!self::matchMask($fileName, $ignoreFiles)) {
 				$this->io->write("Composer cleaner: Removing $path", true, IOInterface::VERBOSE);
@@ -174,7 +183,11 @@ class Cleaner
 			$this->io->writeError("Composer cleaner: File $file not found.", true, IOInterface::VERBOSE);
 			return null;
 		}
-		$data = json_decode(file_get_contents($file));
+		$content = file_get_contents($file);
+		if ($content === false) {
+			throw new \RuntimeException("Cannot read file $file");
+		}
+		$data = json_decode($content);
 		if (!$data instanceof stdClass) {
 			$this->io->writeError("Composer cleaner: Invalid $file.");
 			return null;
