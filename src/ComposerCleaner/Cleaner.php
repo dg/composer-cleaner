@@ -50,12 +50,17 @@ class Cleaner
 					continue;
 				}
 				$name = $packageVendor->getFilename() . '/' . $packageName->getFilename();
+				$path = (string) $packageName;
+				if ($this->fileSystem->isSymlinkedDirectory($path) || $this->fileSystem->isJunction($path)) {
+					$this->io->write("Composer cleaner: Skipped symlinked/junction package $name", true, IOInterface::VERBOSE);
+					continue;
+				}
 				$ignore = $ignorePaths[$name] ?? null;
 				if ($ignore === true) {
 					$this->io->write("Composer cleaner: Skipped package $name", true, IOInterface::VERBOSE);
 				} else {
 					$this->io->write("Composer cleaner: Package $name", true, IOInterface::VERBOSE);
-					$this->processPackage((string) $packageName, (array) $ignore);
+					$this->processPackage($path, (array) $ignore);
 				}
 			}
 		}
