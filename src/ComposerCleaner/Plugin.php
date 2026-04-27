@@ -14,22 +14,22 @@ use Composer\Util\ProcessExecutor;
 
 class Plugin implements PluginInterface, EventSubscriberInterface
 {
-	public function activate(Composer $composer, IOInterface $io)
+	public function activate(Composer $composer, IOInterface $io): void
 	{
 	}
 
 
-	public function deactivate(Composer $composer, IOInterface $io)
+	public function deactivate(Composer $composer, IOInterface $io): void
 	{
 	}
 
 
-	public function uninstall(Composer $composer, IOInterface $io)
+	public function uninstall(Composer $composer, IOInterface $io): void
 	{
 	}
 
 
-	public static function getSubscribedEvents()
+	public static function getSubscribedEvents(): array
 	{
 		return [
 			ScriptEvents::POST_UPDATE_CMD => 'clean',
@@ -38,7 +38,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 	}
 
 
-	public function clean(Event $event)
+	public function clean(Event $event): void
 	{
 		$vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
 		$extra = $event->getComposer()->getPackage()->getExtra();

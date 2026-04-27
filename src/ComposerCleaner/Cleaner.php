@@ -16,30 +16,23 @@ use stdClass;
 
 class Cleaner
 {
-	/** @var IOInterface */
-	private $io;
-
-	/** @var Filesystem */
-	private $fileSystem;
-
-	/** @var int */
-	private $removedCount = 0;
+	private int $removedCount = 0;
 
 	/** @var array */
-	private static $allowedComposerTypes = [null, 'library', 'composer-plugin'];
+	private static array $allowedComposerTypes = [null, 'library', 'composer-plugin'];
 
 	/** @var string[] */
-	private static $alwaysIgnore = ['composer.json', 'license*', 'LICENSE*', '.phpstorm.meta.php'];
+	private static array $alwaysIgnore = ['composer.json', 'license*', 'LICENSE*', '.phpstorm.meta.php'];
 
 
-	public function __construct(IOInterface $io, Filesystem $fileSystem)
-	{
-		$this->io = $io;
-		$this->fileSystem = $fileSystem;
+	public function __construct(
+		private readonly IOInterface $io,
+		private readonly Filesystem $fileSystem,
+	) {
 	}
 
 
-	public function clean($vendorDir, array $ignorePaths = []): void
+	public function clean(string $vendorDir, array $ignorePaths = []): void
 	{
 		foreach (new FilesystemIterator($vendorDir) as $packageVendor) {
 			if (!$packageVendor->isDir()) {
@@ -79,7 +72,7 @@ class Cleaner
 
 		foreach ($this->getExcludes($data) as $exclude) {
 			$dir = trim(ltrim($exclude, '.'), '/');
-			if ($dir && strpos($dir, '..') === false && !self::matchMask($dir, $ignoreFiles)) {
+			if ($dir && !str_contains($dir, '..') && !self::matchMask($dir, $ignoreFiles)) {
 				$path = $packageDir . '/' . $dir;
 				$this->io->write("Composer cleaner: Removing $path", true, IOInterface::VERBOSE);
 				$this->fileSystem->remove($path);
@@ -166,7 +159,7 @@ class Cleaner
 	/**
 	 * @return string[]
 	 */
-	private function getExcludes(stdClass $data)
+	private function getExcludes(stdClass $data): array
 	{
 		return empty($data->autoload->{'exclude-from-classmap'})
 			? []
