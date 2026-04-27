@@ -133,9 +133,9 @@ class Cleaner
 		foreach ($data->autoload as $type => $items) {
 			if ($type === 'psr-0') {
 				foreach ($items as $namespace => $paths) {
-					$namespace = strtr($namespace, '\\_', '//');
+					$namespace = strtr($namespace, '\_', '//');
 					foreach ((array) $paths as $path) {
-						$sources[] = rtrim($path, '\\/') . '/' . $namespace;
+						$sources[] = rtrim($path, '\/') . '/' . $namespace;
 					}
 				}
 			} elseif ($type === 'psr-4') {
