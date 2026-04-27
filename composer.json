@@ -27,6 +27,9 @@
 		"tester": "tester tests -s"
 	},
 	"extra": {
-		"class": "DG\\ComposerCleaner\\Plugin"
+		"class": "DG\\ComposerCleaner\\Plugin",
+		"branch-alias": {
+			"dev-master": "2.3-dev"
+		}
 	}
 }
