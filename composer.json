@@ -1,8 +1,8 @@
 {
 	"name": "dg/composer-cleaner",
 	"type": "composer-plugin",
-	"description": "Victor The Cleaner: removes unnecessary files from vendor directory.",
-	"keywords": ["composer"],
+	"description": "🧹 Victor the Cleaner: a Composer plugin that removes tests, docs and everything else from vendor, keeping only the code that is autoloaded.",
+	"keywords": ["composer", "composer plugin", "vendor", "cleanup", "deployment"],
 	"license": ["BSD-3-Clause"],
 	"authors": [
 		{
