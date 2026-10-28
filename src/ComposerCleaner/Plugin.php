@@ -6,10 +6,8 @@ use Composer\Composer;
 use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
-use Composer\Script\Event;
-use Composer\Script\ScriptEvents;
-use Composer\Util\Filesystem;
-use Composer\Util\ProcessExecutor;
+use Composer\Script\{Event, ScriptEvents};
+use Composer\Util\{Filesystem, ProcessExecutor};
 
 
 class Plugin implements PluginInterface, EventSubscriberInterface

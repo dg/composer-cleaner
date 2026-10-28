@@ -12,6 +12,7 @@ use Composer\IO\IOInterface;
 use Composer\Util\Filesystem;
 use FilesystemIterator;
 use stdClass;
+use function count;
 
 
 class Cleaner
@@ -61,7 +62,7 @@ class Cleaner
 					$this->io->write("Composer cleaner: Skipped package $name", true, IOInterface::VERBOSE);
 				} else {
 					$this->io->write("Composer cleaner: Package $name", true, IOInterface::VERBOSE);
-					$this->processPackage($path, array_merge($defaultIgnore[$name] ?? [], (array) $ignore));
+					$this->processPackage($path, [...$defaultIgnore[$name] ?? [], ...(array) $ignore]);
 				}
 			}
 		}
@@ -100,7 +101,7 @@ class Cleaner
 			return;
 		}
 
-		$ignoreFiles = array_merge($ignoreFiles, self::$alwaysIgnore);
+		$ignoreFiles = [...$ignoreFiles, ...self::$alwaysIgnore];
 		$this->removeUnmatched($packageDir, '', $ignoreFiles);
 	}
 
@@ -187,10 +188,10 @@ class Cleaner
 				}
 			} elseif ($type === 'psr-4') {
 				foreach ($items as $paths) {
-					$sources = array_merge($sources, (array) $paths);
+					$sources = [...$sources, ...(array) $paths];
 				}
 			} elseif ($type === 'classmap' || $type === 'files') {
-				$sources = array_merge($sources, (array) $items);
+				$sources = [...$sources, ...(array) $items];
 
 			} elseif ($type === 'exclude-from-classmap') {
 				// ignore
