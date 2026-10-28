@@ -98,16 +98,53 @@ class Cleaner
 		}
 
 		$ignoreFiles = array_merge($ignoreFiles, self::$alwaysIgnore);
+		$this->removeUnmatched($packageDir, '', $ignoreFiles);
+	}
 
-		foreach (new FilesystemIterator($packageDir) as $path) {
+
+	/**
+	 * Removes items matching no mask, descending into directories that a mask with a slash leads into.
+	 * @param  list<string>  $masks
+	 */
+	private function removeUnmatched(string $dir, string $prefix, array $masks): void
+	{
+		foreach (new FilesystemIterator($dir) as $path) {
 			assert($path instanceof \SplFileInfo);
-			$fileName = $path->getFilename();
-			if (!self::matchMask($fileName, $ignoreFiles)) {
+			$relative = $prefix . $path->getFilename();
+			if (self::matchPath($relative, $masks)) {
+				continue;
+			} elseif ($path->isDir() && !$path->isLink() && self::matchPath($relative, $masks, ancestor: true)) {
+				$this->removeUnmatched((string) $path, $relative . '/', $masks);
+			} else {
 				$this->io->write("Composer cleaner: Removing $path", true, IOInterface::VERBOSE);
 				$this->fileSystem->remove((string) $path);
 				$this->removedCount++;
 			}
 		}
+	}
+
+
+	/**
+	 * Matches a path relative to the package, or with $ancestor whether a mask leads below it.
+	 * @param  list<string>  $masks
+	 */
+	private static function matchPath(string $path, array $masks, bool $ancestor = false): bool
+	{
+		$depth = substr_count($path, '/') + 1;
+		foreach ($masks as $mask) {
+			$parts = explode('/', rtrim($mask, '/'));
+			if ($ancestor) {
+				if (count($parts) <= $depth) {
+					continue;
+				}
+				$parts = array_slice($parts, 0, $depth);
+			}
+			if (fnmatch(implode('/', $parts), $path, FNM_PATHNAME)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 

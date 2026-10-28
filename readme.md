@@ -34,7 +34,8 @@ Simply add a `extra > cleaner-ignore` section to `composer.json` file:
 	"extra": {
 		"cleaner-ignore": {
 			"slevomat/eet-client": [  // name of package
-				"wsdl*"               // list of files or subdirectories, you can use wildcards `*` and `?`
+				"wsdl*",              // list of files or subdirectories, you can use wildcards `*` and `?`
+				"data/keep.crt"       // a path with a slash keeps an item inside a subdirectory
 			],
 
 			"mpdf/mpdf": true         // ignores whole package
