@@ -37,6 +37,9 @@ class Cleaner
 	 */
 	public function clean(string $vendorDir, array $ignorePaths = []): void
 	{
+		/** @var array<string, list<string>> $defaultIgnore */
+		$defaultIgnore = require __DIR__ . '/default-ignore.php';
+
 		foreach (new FilesystemIterator($vendorDir) as $packageVendor) {
 			assert($packageVendor instanceof \SplFileInfo);
 			if (!$packageVendor->isDir()) {
@@ -58,7 +61,7 @@ class Cleaner
 					$this->io->write("Composer cleaner: Skipped package $name", true, IOInterface::VERBOSE);
 				} else {
 					$this->io->write("Composer cleaner: Package $name", true, IOInterface::VERBOSE);
-					$this->processPackage($path, (array) $ignore);
+					$this->processPackage($path, array_merge($defaultIgnore[$name] ?? [], (array) $ignore));
 				}
 			}
 		}

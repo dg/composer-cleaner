@@ -26,6 +26,7 @@ Configuration
 Some libraries also requires other files/directories, which the the Cleaner judged to be unnecessary.
 In this case, you can list them (specify paths to be ignored), in the configuration and the tool will keep them.
 Or you can specify that some libraries should not be cleaned at all.
+The Cleaner already knows a few such libraries (e.g. `composer/ca-bundle` and `stripe/stripe-php`) and keeps their files by itself.
 
 Simply add a `extra > cleaner-ignore` section to `composer.json` file:
 
