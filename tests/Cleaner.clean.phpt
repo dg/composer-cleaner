@@ -21,7 +21,7 @@ function clean(array $ignore, string $name = 'a/b'): array
 		'wsdl1/a.wsdl' => '',
 	];
 	foreach ($files as $file => $content) {
-		@mkdir(dirname("$vendorDir/$name/$file"), 0o777, true);
+		@mkdir(dirname("$vendorDir/$name/$file"), 0o777, true); // @ directory may already exist
 		file_put_contents("$vendorDir/$name/$file", $content);
 	}
 
