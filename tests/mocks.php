@@ -1,46 +1,43 @@
 <?php declare(strict_types=1);
 
-namespace Composer\IO {
+trait CallLog
+{
+	private array $log = [];
 
-	interface IOInterface
+
+	public function getLog(): array
 	{
-		public const VERBOSE = 'VERBOSE';
+		$res = $this->log;
+		$this->log = [];
+		return $res;
 	}
 }
 
-namespace Composer\Util {
 
-	interface Filesystem
+class IOMock extends Composer\IO\NullIO
+{
+	use CallLog;
+
+	public function write($messages, bool $newline = true, int $verbosity = self::NORMAL): void
 	{
+		$this->log[] = [__FUNCTION__, func_get_args()];
+	}
+
+
+	public function writeError($messages, bool $newline = true, int $verbosity = self::NORMAL): void
+	{
+		$this->log[] = [__FUNCTION__, func_get_args()];
 	}
 }
 
-namespace {
 
-	class Mock
+class FilesystemMock extends Composer\Util\Filesystem
+{
+	use CallLog;
+
+	public function remove(string $file): bool
 	{
-		private $log = [];
-
-
-		public function __call($name, $args)
-		{
-			$this->log[] = [$name, $args];
-		}
-
-
-		public function getLog()
-		{
-			$res = $this->log;
-			$this->log = [];
-			return $res;
-		}
-	}
-
-	class IOInterface extends Mock implements Composer\IO\IOInterface
-	{
-	}
-
-	class Filesystem extends Mock implements Composer\Util\Filesystem
-	{
+		$this->log[] = [__FUNCTION__, func_get_args()];
+		return true;
 	}
 }

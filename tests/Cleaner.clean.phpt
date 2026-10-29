@@ -25,8 +25,8 @@ function clean(array $ignore, string $name = 'a/b'): array
 		file_put_contents("$vendorDir/$name/$file", $content);
 	}
 
-	$fileSystem = new Filesystem;
-	$cleaner = new DG\ComposerCleaner\Cleaner(new IOInterface, $fileSystem);
+	$fileSystem = new FilesystemMock;
+	$cleaner = new DG\ComposerCleaner\Cleaner(new IOMock, $fileSystem);
 	$cleaner->clean($vendorDir, [$name => $ignore]);
 
 	$removed = [];
