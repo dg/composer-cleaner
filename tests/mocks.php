@@ -40,4 +40,11 @@ class FilesystemMock extends Composer\Util\Filesystem
 		$this->log[] = [__FUNCTION__, func_get_args()];
 		return true;
 	}
+
+	public function unlink(string $path): bool
+	{
+		$this->log[] = [__FUNCTION__, func_get_args()];
+		parent::unlink($path);
+		return true;
+	}
 }

@@ -121,7 +121,11 @@ class Cleaner
 				$this->removeUnmatched((string) $path, $relative . '/', $masks);
 			} else {
 				$this->io->write("Composer cleaner: Removing $path", true, IOInterface::VERBOSE);
-				$this->fileSystem->remove((string) $path);
+				if ($path->isLink()) {
+					$this->fileSystem->unlink((string) $path);
+				} else {
+					$this->fileSystem->remove((string) $path);
+				}
 				$this->removedCount++;
 			}
 		}
